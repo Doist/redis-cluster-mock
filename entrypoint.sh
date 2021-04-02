@@ -27,7 +27,7 @@ done
 
 (
     REDIS_IP=$(hostname -i)
-    sleep 5 && redis-cli --cluster create \
+    sleep 3 && redis-cli --cluster create \
         $REDIS_IP:7000 $REDIS_IP:7001 $REDIS_IP:7002 \
         $REDIS_IP:7003 $REDIS_IP:7004 $REDIS_IP:7005 \
       --cluster-replicas 1 --cluster-yes;
