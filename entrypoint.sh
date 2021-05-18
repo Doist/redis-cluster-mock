@@ -1,36 +1,22 @@
 #!/bin/sh -eu
 
-PORTS="7000 7001 7002 7003 7004 7005"
+PORT="7000"
 
-mkdir -p /etc/service /etc/redis
+/usr/local/bin/redis-server --daemonize yes --port $PORT \
+    --loglevel warning \
+    --cluster-enabled yes \
+    --cluster-config-file nodes.conf \
+    --cluster-node-timeout 5000 \
+    --appendonly yes
 
-for PORT in $PORTS; do
-    mkdir -p /etc/sv/$PORT
-
-cat >"/etc/sv/$PORT/run" <<EOF
-#!/bin/sh -eu
-exec 2>&1
-exec /usr/local/bin/redis-server /etc/redis/$PORT.conf
-EOF
-
-cat > "/etc/redis/$PORT.conf" <<EOF
-daemonize no
-port $PORT
-cluster-enabled yes
-cluster-config-file nodes.conf
-cluster-node-timeout 5000
-appendonly yes
-EOF
-    chmod +x /etc/sv/$PORT/run
-    ln -svf /etc/sv/$PORT /etc/service/
+while redis-cli -p $PORT ping 2>&1 | grep -v PONG
+do
+    echo "== Waiting for redis to start"
+    sleep 3
 done
 
-(
-    REDIS_IP=$(hostname -i)
-    sleep 3 && redis-cli --cluster create \
-        $REDIS_IP:7000 $REDIS_IP:7001 $REDIS_IP:7002 \
-        $REDIS_IP:7003 $REDIS_IP:7004 $REDIS_IP:7005 \
-      --cluster-replicas 1 --cluster-yes;
-) &
-
-exec /sbin/runsvdir -P /etc/service
+REDIS_IP=$(hostname -i)
+echo "== Create redis cluster"
+redis-trib.py create $REDIS_IP:$PORT
+echo "== Check cluster"
+redis-trib.py list --addr $REDIS_IP:$PORT
