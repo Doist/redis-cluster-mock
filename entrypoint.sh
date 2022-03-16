@@ -81,7 +81,7 @@ EOF
 
     (
         sleep 5
-        redis-cli --cluster-yes --cluster create --cluster-replicas "$SLAVES_PER_MASTER" "$nodes"
+        echo "yes" | eval /redis/src/redis-cli --cluster create --cluster-replicas "$SLAVES_PER_MASTER" "$nodes"
     ) &
 
     exec /sbin/runsvdir -P /etc/service
