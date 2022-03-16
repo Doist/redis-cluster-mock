@@ -4,9 +4,6 @@ FROM redis:5-alpine
 RUN apk --no-cache --update add runit ruby \
     && gem install redis && mkdir -p /etc/service
 
-COPY redis-cluster.tmpl /
-COPY redis.tmpl         /
-
 COPY /entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["redis-cluster"]
