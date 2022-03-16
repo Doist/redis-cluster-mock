@@ -53,6 +53,7 @@ if [ "$1" = 'redis-cluster' ]; then
             cat >"/redis-conf/${port}/redis.conf" <<EOF
 bind ${BIND_ADDRESS}
 port ${port}
+daemonize no
 cluster-enabled yes
 cluster-config-file nodes.conf
 cluster-node-timeout 5000
@@ -64,6 +65,7 @@ EOF
             cat >"/redis-conf/${port}/redis.conf" <<EOF
 bind ${BIND_ADDRESS}
 port ${port}
+daemonize no
 appendonly yes
 dir /redis-data/${port}
 EOF
