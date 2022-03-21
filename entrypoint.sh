@@ -1,4 +1,4 @@
-#!/bin/sh -ex
+#!/bin/sh -e
 
 if [ "$1" = 'redis-cluster' ]; then
     # Allow passing in cluster IP by argument or environmental variable
@@ -78,7 +78,7 @@ exec /usr/local/bin/redis-server /redis-conf/${port}/redis.conf
 EOF
 
         chmod +x "/etc/sv/${port}/run"
-        ln -svf "/etc/sv/${port}" /etc/service/
+        ln -sf "/etc/sv/${port}" /etc/service/
     done
 
     (
