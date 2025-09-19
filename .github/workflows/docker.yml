@@ -49,6 +49,7 @@ jobs:
           cache-to: type=inline
           tags: |
             ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.IMAGE_NAME }}:latest
           platforms: linux/amd64,linux/arm64
 
         env:
