@@ -12,8 +12,6 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-env:
-  IMAGE_NAME: ghcr.io/doist/redis-cluster-mock
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -30,6 +28,8 @@ jobs:
       - run: |
           echo short=$(git rev-parse --short=7 ${{ github.sha }}) >> $GITHUB_OUTPUT
         id: git
+      - run: |
+          echo IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/redis-cluster-mock >> $GITHUB_ENV
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
